@@ -84,3 +84,6 @@ cypress/videos/
 Thumbs.db
 directoryStructure.txt
 backend/implementation_plan.md
+backend+frontend.md
+.gitignore
+cookies.txt

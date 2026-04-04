@@ -1,6 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { useAuth } from "./context/AuthContext";
 
 const letters = ["e", "x", "u", "s"];
 
@@ -20,6 +22,24 @@ const fadeLetter = {
 };
 
 export default function LandingPage() {
+  const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { user, login, register, logout, error, clearError, loading: authLoading } = useAuth();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (isLogin) {
+        await login(email, password);
+      } else {
+        await register(email, password);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="min-h-screen relative flex items-center justify-center p-6 md:p-12 overflow-hidden">
       {/* GLOBAL BACKGROUND: Entire page background is clear */}
@@ -155,82 +175,111 @@ export default function LandingPage() {
               {/* RIGHT SIDE */}
               <div className="flex-1 flex items-center justify-center px-10 md:px-20">
                 <div className="w-full max-w-sm bg-white/60 backdrop-blur-md p-8 rounded-2xl shadow-2xl border-4 border-black">
-                  <h2 className="text-2xl font-semibold mb-6 text-left">
-                    Welcome to NexusLife!
-                    <br />
-                    <span className="text-lg font-normal text-gray-600">
-                      Let&apos;s get you started
-                    </span>
-                  </h2>
-
-                  <div className="space-y-4">
-                    <div>
-                      <label
-                        htmlFor="email"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                  {user ? (
+                    <div className="text-center">
+                      <h2 className="text-2xl font-semibold mb-4">Welcome back!</h2>
+                      <p className="text-lg mb-6">{user.email}</p>
+                      <button
+                        onClick={logout}
+                        className="w-full bg-black text-white py-2.5 rounded-lg hover:opacity-90 transition font-medium"
                       >
-                        Email or Phone
-                      </label>
-                      <input
-                        id="email"
-                        type="text"
-                        placeholder="you@example.com"
-                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-400/30 focus:border-blue-500 transition placeholder:text-gray-400 text-black"
-                      />
+                        Log Out
+                      </button>
                     </div>
+                  ) : (
+                    <>
+                      <h2 className="text-2xl font-semibold mb-6 text-left">
+                        {isLogin ? "Welcome to NexusLife!" : "Join NexusLife"}
+                        <br />
+                        <span className="text-lg font-normal text-gray-600">
+                          {isLogin ? "Let's get you started" : "Create your account"}
+                        </span>
+                      </h2>
 
-                    <div>
-                      <label
-                        htmlFor="password"
-                        className="block text-sm font-medium text-gray-700 mb-1"
+                      {error && (
+                        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+                          {error}
+                        </div>
+                      )}
+
+                      <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                          <label
+                            htmlFor="email"
+                            className="block text-sm font-medium text-gray-700 mb-1"
+                          >
+                            Email
+                          </label>
+                          <input
+                            id="email"
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            placeholder="you@example.com"
+                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-400/30 focus:border-blue-500 transition placeholder:text-gray-400 text-black"
+                          />
+                        </div>
+
+                        <div>
+                          <label
+                            htmlFor="password"
+                            className="block text-sm font-medium text-gray-700 mb-1"
+                          >
+                            Password
+                          </label>
+                          <input
+                            id="password"
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                            placeholder="••••••••"
+                            className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-400/30 focus:border-blue-500 transition placeholder:text-gray-400 text-black"
+                          />
+                        </div>
+
+                        <button
+                          type="submit"
+                          disabled={authLoading}
+                          className="w-full bg-black text-white py-2.5 rounded-lg hover:opacity-90 transition font-medium disabled:opacity-50"
+                        >
+                          {authLoading ? "Please wait..." : isLogin ? "Log In" : "Sign Up"}
+                        </button>
+                      </form>
+
+                      <p className="text-center text-sm text-gray-600 mt-5">
+                        {isLogin ? "Not joined yet? " : "Already have an account? "}
+                        <button
+                          type="button"
+                          onClick={() => { setIsLogin(!isLogin); clearError(); }}
+                          className="text-black font-bold hover:underline bg-transparent border-none p-0 cursor-pointer"
+                        >
+                          {isLogin ? "Create an account" : "Log in"}
+                        </button>
+                      </p>
+
+                      <div className="flex items-center gap-3 my-5">
+                        <div className="flex-1 h-px bg-gray-300" />
+                        <span className="text-sm text-gray-400">or</span>
+                        <div className="flex-1 h-px bg-gray-300" />
+                      </div>
+
+                      <button
+                        id="google-login-btn"
+                        type="button"
+                        className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2.5 rounded-lg hover:bg-gray-100 transition bg-white"
                       >
-                        Password
-                      </label>
-                      <input
-                        id="password"
-                        type="password"
-                        placeholder="••••••••"
-                        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-400/30 focus:border-blue-500 transition placeholder:text-gray-400 text-black"
-                      />
-                    </div>
-
-                    <button
-                      id="login-btn"
-                      className="w-full bg-black text-white py-2.5 rounded-lg hover:opacity-90 transition font-medium"
-                    >
-                      Log In
-                    </button>
-                  </div>
-
-                  <p className="text-center text-sm text-gray-600 mt-5">
-                    Not joined yet?{" "}
-                    <a
-                      id="create-account-link"
-                      href="#"
-                      className="text-black font-bold hover:underline"
-                    >
-                      Create an account
-                    </a>
-                  </p>
-
-                  <div className="flex items-center gap-3 my-5">
-                    <div className="flex-1 h-px bg-gray-300" />
-                    <span className="text-sm text-gray-400">or</span>
-                    <div className="flex-1 h-px bg-gray-300" />
-                  </div>
-
-                  <button
-                    id="google-login-btn"
-                    className="w-full flex items-center justify-center gap-2 border border-gray-300 py-2.5 rounded-lg hover:bg-gray-100 transition bg-white"
-                  >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src="https://www.svgrepo.com/show/475656/google-color.svg"
-                      alt="Google logo"
-                      className="w-5 h-5"
-                    />
-                    Continue with Google
-                  </button>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src="https://www.svgrepo.com/show/475656/google-color.svg"
+                          alt="Google logo"
+                          className="w-5 h-5"
+                        />
+                        Continue with Google
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </div>
