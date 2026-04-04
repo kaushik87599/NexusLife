@@ -1,10 +1,20 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.api.v1.router import api_router
+from app.core.database import engine, Base
+from app import models
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Create database tables
+    Base.metadata.create_all(bind=engine)
+    yield
 
 app = FastAPI(
     title="NexusLife API",
     description="Backend for the NexusLife productivity ecosystem",
-    version="0.1.0"
+    version="0.1.0",
+    lifespan=lifespan
 )
 
 @app.get("/", tags=["Health Check"])
