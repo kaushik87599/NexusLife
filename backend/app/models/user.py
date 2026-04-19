@@ -15,3 +15,4 @@ class User(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     tasks = relationship("Task", back_populates="user")
     events = relationship("Event", back_populates="user")
+    notes = relationship("Note", back_populates="user")

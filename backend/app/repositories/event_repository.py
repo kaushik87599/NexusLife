@@ -16,7 +16,7 @@ class EventRepository:
         return db_event
 
     def get_user_events(self, current_user_id: int, start_date: Optional[datetime] = None, end_date: Optional[datetime] = None):
-        query = self.db.query(Event).filter(Event.user_id == current_user_id)
+        query = self.db.query(Event).filter(Event.user_id == current_user_id).order_by(Event.start_time)
         if start_date:
             query = query.filter(Event.start_time >= start_date)
         if end_date:
@@ -27,13 +27,13 @@ class EventRepository:
         return self.db.query(Event).filter(
             Event.id == event_id,
             Event.user_id == current_user_id
-        ).first()
+        ).order_by(Event.start_time).first()
 
     def update_event(self, event_id: int, event_data: EventUpdate, current_user_id: int):
         db_event = self.db.query(Event).filter(
             Event.id == event_id,
             Event.user_id == current_user_id
-        ).first()
+        ).order_by(Event.start_time).first()
         
         if db_event:
             for key, value in event_data.model_dump(exclude_unset=True).items():

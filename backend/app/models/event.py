@@ -17,7 +17,8 @@ class Event(Base):
     event_type=Column(String,default="event")  
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     created_at = Column(DateTime(timezone=True), server_default=func.now())
-    
+    tags=Column(String,default="")
+    color=Column(String,default="#C6C3C3")
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 
     user = relationship("User", back_populates="events")

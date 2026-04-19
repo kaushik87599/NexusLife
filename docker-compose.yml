@@ -12,6 +12,17 @@ services:
       - /usr/src/app/.next
     depends_on:
       - backend
+    develop:
+      watch:
+        - path: ./frontend
+          target: /usr/src/app
+          action: sync
+
+        - path: ./frontend/package.json
+          action: rebuild
+
+        - path: ./frontend/package-lock.json
+          action: rebuild
 
   backend:
     build:
@@ -27,6 +38,15 @@ services:
         condition: service_started
       redis:
         condition: service_started
+    command: uvicorn app.main:app --host 0.0.0.0 --port 3001 --reload
+    develop:
+      watch:
+        - path: ./backend
+          target: /app
+          action: sync
+
+        - path: ./backend/requirements.txt
+          action: rebuild
         
   db:
     image: postgres:15

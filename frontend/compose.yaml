@@ -10,3 +10,14 @@ services:
       - .:/usr/src/app
       - /usr/src/app/node_modules
       - /usr/src/app/.next
+    develop:
+      watch:
+        - path: .
+          target: /usr/src/app
+          action: sync
+
+        - path: ./package.json
+          action: rebuild
+
+        - path: ./package-lock.json
+          action: rebuild

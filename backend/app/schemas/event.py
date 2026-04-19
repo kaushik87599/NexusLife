@@ -9,7 +9,9 @@ class EventBase(BaseModel):
     end_time: datetime
     location: Optional[str] = None
     is_all_day: bool = False
-    event_type:Optional[str] = "event"
+    event_type: Optional[str] = "event"
+    tags: Optional[str] = ""
+    color: Optional[str] = "#C6C3C3"
 
 
 class EventCreate(EventBase):
@@ -24,6 +26,8 @@ class EventUpdate(BaseModel):
     location: Optional[str] = None
     status: Optional[str] = None
     is_all_day: Optional[bool] = None
+    tags: Optional[str] = None
+    color: Optional[str] = None
 
 class EventResponse(EventBase):
     id: int

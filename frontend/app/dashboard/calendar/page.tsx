@@ -11,10 +11,14 @@ import {
   updateEvent, 
   deleteEvent 
 } from "@/app/lib/api/events";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/context/AuthContext";
 import { Calendar } from "./components/Calendar";
 import { EventDialog } from "./components/EventDialog";
 
 export default function CalendarPage() {
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
   const [events, setEvents] = useState<Event[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +29,14 @@ export default function CalendarPage() {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [defaultStartTime, setDefaultStartTime] = useState<string | undefined>(undefined);
 
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/");
+    }
+  }, [user, authLoading, router]);
+
   const loadEvents = useCallback(async () => {
+    if (!user) return;
     setIsLoading(true);
     setError(null);
     try {

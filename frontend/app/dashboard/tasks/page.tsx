@@ -11,11 +11,15 @@ import {
   updateTask, 
   deleteTask 
 } from "@/app/lib/api/tasks";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/context/AuthContext";
 import { TaskItem } from "@/app/components/tasks/TaskItem";
 import { TaskForm } from "@/app/components/tasks/TaskForm";
 import { TaskFilters } from "@/app/components/tasks/TaskFilters";
 
 export default function TasksPage() {
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +29,14 @@ export default function TasksPage() {
   const [statusFilter, setStatusFilter] = useState("");
   const [priorityFilter, setPriorityFilter] = useState("");
 
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push("/");
+    }
+  }, [user, authLoading, router]);
+
   const loadTasks = useCallback(async () => {
+    if (!user) return;
     setIsLoading(true);
     setError(null);
     try {
