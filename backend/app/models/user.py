@@ -16,3 +16,6 @@ class User(Base):
     tasks = relationship("Task", back_populates="user")
     events = relationship("Event", back_populates="user")
     notes = relationship("Note", back_populates="user")
+    study_sessions = relationship("StudySession", back_populates="user")
+    reminders = relationship("Reminder", back_populates="user")
+    notifications = relationship("Notification", back_populates="user")

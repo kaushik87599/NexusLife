@@ -179,12 +179,20 @@ export default function LandingPage() {
                     <div className="text-center">
                       <h2 className="text-2xl font-semibold mb-4">Welcome back!</h2>
                       <p className="text-lg mb-6">{user.email}</p>
-                      <button
-                        onClick={logout}
-                        className="w-full bg-black text-white py-2.5 rounded-lg hover:opacity-90 transition font-medium"
-                      >
-                        Log Out
-                      </button>
+                      <div className="space-y-3">
+                        <button
+                          onClick={() => window.location.href = "/dashboard/tasks"}
+                          className="w-full bg-emerald-500 text-black py-2.5 rounded-lg hover:opacity-90 transition font-bold"
+                        >
+                          Go to Dashboard
+                        </button>
+                        <button
+                          onClick={logout}
+                          className="w-full bg-black/10 text-black py-2.5 rounded-lg hover:bg-black/20 transition font-medium"
+                        >
+                          Log Out
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <>

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
 import { NoteDialog } from "./components/NoteDialog";
 import { Plus, Search, Filter, Pin, Clock, Tag as TagIcon, MoreVertical, Edit3, Trash2 } from "lucide-react";
+import { DashboardHeader } from "@/app/components/layout/DashboardHeader";
 
 export default function NotesPage() {
   const { user, loading: authLoading } = useAuth();
@@ -89,9 +90,9 @@ export default function NotesPage() {
     });
     return Array.from(tagsSet);
   }, [notes]);
-
   return (
-    <div className="min-h-screen bg-black text-white p-6 md:p-12">
+    <div className="min-h-screen bg-black text-white pt-24 pb-12 px-6 md:px-12">
+      <DashboardHeader />
       {/* Header Section */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
         <motion.div

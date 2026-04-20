@@ -1,15 +1,31 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from app.api.v1.router import api_router
 from app.core.database import engine, Base
 from app import models
+
+from app.services.notification_reminders.scheduler_service import check_due_reminders
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Create database tables
     Base.metadata.create_all(bind=engine)
+    
+    # Initialize the scheduler
+    scheduler = AsyncIOScheduler()
+    
+    # Add your job (uncomment and replace with your actual function)
+    scheduler.add_job(check_due_reminders, 'interval', seconds=10)
+    
+    # Start the scheduler
+    scheduler.start()
+    
     yield
+    
+    # Shut down the scheduler gracefully during app teardown
+    scheduler.shutdown()
 
 app = FastAPI(
     title="NexusLife API",

@@ -10,7 +10,7 @@ class NoteBase(BaseModel):
     is_pinned: bool = False
 
 class NoteCreate(NoteBase):
-    pass
+    pass #because the NoteBase  captures all the required fields itself
 
 class NoteUpdate(BaseModel):
     title: Optional[str] = None

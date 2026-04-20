@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
 import { Calendar } from "./components/Calendar";
 import { EventDialog } from "./components/EventDialog";
+import { DashboardHeader } from "@/app/components/layout/DashboardHeader";
 
 export default function CalendarPage() {
   const { user, loading: authLoading } = useAuth();
@@ -102,7 +103,8 @@ export default function CalendarPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white p-6 md:p-12 overflow-hidden relative">
+    <div className="min-h-screen bg-black text-white pt-24 pb-12 px-6 md:px-12 overflow-hidden relative">
+      <DashboardHeader />
       {/* Background gradients */}
       <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-blue-600/10 blur-[120px] pointer-events-none" />
       <div className="fixed bottom-[-20%] right-[-10%] w-[50%] h-[50%] rounded-full bg-emerald-600/10 blur-[120px] pointer-events-none" />
